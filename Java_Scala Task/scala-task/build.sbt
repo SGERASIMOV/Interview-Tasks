@@ -8,5 +8,8 @@ lazy val root = (project in file(".")).
       version      := "0.1.0-SNAPSHOT"
     )),
     name := "scala-task",
+    libraryDependencies += akka,
+    libraryDependencies += akkaQuartzScheduler,
+    libraryDependencies += akkaTest % Test,
     libraryDependencies += scalaTest % Test
   )
