@@ -1,25 +1,38 @@
 package task2.models
 
-class FreeUser(name: UserName) extends User(name) {
+case class FreeUser(name: UserName, level: Int, experience: Int, actionsAmount: Int) extends User {
+  import FreeUser._
 
-  private var _actionsAmount: Int = 3
-
-  def actionsAmount: Int = _actionsAmount
-
-  override def userTypeSpecificUpdate(): Int = {
+  override def userTypeSpecificUpdate(): FreeUser = {
     updateActionsAmount()
   }
 
-  private def updateActionsAmount(): Int = {
-    if (_actionsAmount < 3) _actionsAmount = 3
-    _actionsAmount
+  override def setExperience(experience: Int): FreeUser = {
+    require(experience >= 0, "experience must be >= 0")
+    this.copy(experience = experience)
   }
 
-  override def toString = s"FreeUser($level, $experience, $name, $actionsAmount)"
+  override def increaseLevel(levelDelta: Int): FreeUser = {
+    require(levelDelta >= 0, "level delta must be positive")
+    this.copy(level = level + levelDelta)
+  }
+
+  override def toString = s"FreeUser($name, $level, $experience, $actionsAmount)"
+
+  private def updateActionsAmount(): FreeUser = {
+    if (actionsAmount < BASIC_ACTIONS_LIMIT) {
+      this.copy(actionsAmount = BASIC_ACTIONS_LIMIT)
+    } else {
+      this
+    }
+  }
 }
 
 object FreeUser {
-  def apply(name: UserName): User = {
-    new FreeUser(name)
+
+  val BASIC_ACTIONS_LIMIT = 3
+
+  def apply(name: UserName): FreeUser = {
+    new FreeUser(name, 0, 0, 3)
   }
 }

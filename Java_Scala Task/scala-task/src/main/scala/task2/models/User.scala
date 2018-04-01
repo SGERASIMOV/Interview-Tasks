@@ -1,44 +1,36 @@
 package task2.models
 
-abstract class User(val name: UserName) {
+abstract class User {
+  import User._
 
-  private var _level: Int = 0
-  private var _experience: Int = 0
+  val name: UserName
+  val level: Int
+  val experience: Int
 
   require(isValidName(name), "userName could not be empty and can only consist of characters [a-z][A-Z][0-9]-._")
 
-  def experience: Int = _experience
-
-  def level: Int = _level
-
-  def updateUserAtMidnight(): Int = {
-    if (increaseLevel(_experience / 500) > 0) _experience = _experience % 500
-    userTypeSpecificUpdate()
+  def updateUserAtMidnight(): User = {
+    val levelDelta = experience / ONE_LEVEL_EXPERIENCE
+    val experienceDelta = if (levelDelta > 0) experience % ONE_LEVEL_EXPERIENCE else experience
+    if (levelDelta > 0) {
+      setExperience(experienceDelta).increaseLevel(levelDelta).userTypeSpecificUpdate()
+    } else {
+      userTypeSpecificUpdate()
+    }
   }
 
-  def userTypeSpecificUpdate(): Int
+  def setExperience(experience: Int): User
 
-  def increaseLevel(levelDelta: Int): Int = {
-    require(levelDelta >= 0, "level delta must be positive")
-    _level += levelDelta
-    _level
-  }
+  def increaseLevel(levelDelta: Int): User
 
-  def increaseExperience(experienceDelta: Int): Int = {
-    require(experienceDelta > 0, "experience delta must be more than 0")
-    _experience += experienceDelta
-    _experience
-  }
-
-  def decreaseExperience(experienceDelta: Int): Int = {
-    require(experienceDelta > 0, "experience delta must be more than 0")
-    val diff = _experience - experienceDelta
-    if (diff >= 0) _experience = diff else _experience = 0
-    _experience
-  }
+  def userTypeSpecificUpdate(): User
 
   protected def isValidName(name: UserName): Boolean = {
     val firstName = name.firstName
     firstName.nonEmpty && firstName.matches("^[a-zA-Z0-9-._]*$")
   }
+}
+
+object User {
+  val ONE_LEVEL_EXPERIENCE = 500
 }

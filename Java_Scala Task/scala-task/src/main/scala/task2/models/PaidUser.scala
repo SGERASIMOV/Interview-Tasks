@@ -1,28 +1,35 @@
 package task2.models
 
-class PaidUser(name: UserName) extends User(name) {
+case class PaidUser(name: UserName, level: Int, experience: Int, remainedPaidDays: Int) extends User {
 
-  private var _remainedPaidDays: Int = 30
-
-  def remainedPaidDays: Int = _remainedPaidDays
-
-  override def userTypeSpecificUpdate(): Int = {
+  override def userTypeSpecificUpdate(): PaidUser = {
     decreaseRemainedPaidDays(1)
   }
 
-  private def decreaseRemainedPaidDays(paidDaysDelta: Int): Int = {
-    require(paidDaysDelta > 0, "actions delta must be more than 0")
-    if (_remainedPaidDays - paidDaysDelta >= 0) _remainedPaidDays -= paidDaysDelta else _remainedPaidDays = 0
-    _remainedPaidDays
+  override def setExperience(experience: Int): PaidUser = {
+    require(experience >= 0, "experience must be >= 0")
+    this.copy(experience = experience)
   }
 
-  override def toString = s"PaidUser($level, $experience, $name, $remainedPaidDays)"
+  override def increaseLevel(levelDelta: Int): PaidUser = {
+    require(levelDelta >= 0, "level delta must be positive")
+    this.copy(level = level + levelDelta)
+  }
+
+  override def toString = s"PaidUser($name, $level, $experience, $remainedPaidDays)"
+
+  private def decreaseRemainedPaidDays(paidDaysDelta: Int): PaidUser = {
+    require(remainedPaidDays > 0, "to decrease paid days must be more than 0")
+    require(remainedPaidDays - paidDaysDelta > 0, "paid days delta must be more than 0")
+    this.copy(remainedPaidDays = remainedPaidDays - paidDaysDelta)
+  }
 }
 
 object PaidUser {
-  def apply(name: UserName): User = {
-    new PaidUser(name)
+
+  val BASIC_REMAINED_DAYS = 30
+
+  def apply(name: UserName): PaidUser = {
+    new PaidUser(name, 0, 0, BASIC_REMAINED_DAYS)
   }
 }
-
-
