@@ -12,6 +12,11 @@ sealed abstract class TSStack[+A] {
   def push[B >: A](x: B): TSStack[B] = {
     new Cons[B](x, this)
   }
+
+  def pop: TSStack[A] = {
+    if (!isEmpty) this.tail
+    else throw new NoSuchElementException("pop of empty stack")
+  }
 }
 
 case object Empty extends TSStack[Nothing] {
@@ -26,7 +31,7 @@ case object Empty extends TSStack[Nothing] {
   }
 }
 
-case class Cons[T](hd: T, tl: TSStack[T]) extends TSStack[T] {
+case class Cons[+T](hd: T, tl: TSStack[T]) extends TSStack[T] {
   override def isEmpty: Boolean = false
 
   override def head: T = hd

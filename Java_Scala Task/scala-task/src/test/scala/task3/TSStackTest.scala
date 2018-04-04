@@ -53,4 +53,20 @@ class TSStackTest extends FreeSpec with Matchers {
     assert(stack.push(2).toString == "TSStack(2, 1)")
   }
 
+  "push then pop" in new EmptyStackFixture {
+    assert(stack.push(1).pop == Empty)
+  }
+
+  "push, push then pop" in new EmptyStackFixture {
+    assert(stack.push(1).push(2).pop == Cons(1, Empty))
+  }
+
+  "push and then pop, pop " in new EmptyStackFixture {
+    intercept[NoSuchElementException](stack.push(1).pop.pop)
+  }
+
+  "pop on Empty stack" in new EmptyStackFixture {
+    intercept[NoSuchElementException](stack.pop)
+  }
+
 }
