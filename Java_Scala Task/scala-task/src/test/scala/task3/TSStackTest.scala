@@ -9,7 +9,7 @@ class TSStackTest extends FreeSpec with Matchers {
   }
 
   class StackWithOneElementFixture {
-    val stack: TSStack[Int] = Cons(1, Empty)
+    val stack: TSStack[Int] = TSStack(1)
   }
 
   "check stack isEmpty operation" in new EmptyStackFixture {
@@ -42,7 +42,7 @@ class TSStackTest extends FreeSpec with Matchers {
   }
 
   "check tail operation on non-Empty stack" in new StackWithOneElementFixture {
-    assert(stack.push(2).tail == Cons(1, Empty))
+    assert(stack.push(2).tail == TSStack(1))
   }
 
   "toString with 1 element" in new StackWithOneElementFixture {
@@ -58,7 +58,7 @@ class TSStackTest extends FreeSpec with Matchers {
   }
 
   "push, push then pop" in new EmptyStackFixture {
-    assert(stack.push(1).push(2).pop == Cons(1, Empty))
+    assert(stack.push(1).push(2).pop == TSStack(1))
   }
 
   "push and then pop, pop " in new EmptyStackFixture {

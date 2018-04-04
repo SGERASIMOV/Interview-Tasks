@@ -50,5 +50,16 @@ case class Cons[+T](hd: T, tl: TSStack[T]) extends TSStack[T] {
 
     s"TSStack(${loop(StringBuilder.newBuilder, this)})"
   }
+}
 
+object TSStack {
+  def apply[A](seq: A*): TSStack[A] = {
+    @tailrec
+    def loop(list: List[A], acc: TSStack[A]): TSStack[A] = list match {
+      case Nil => acc
+      case x :: xs => loop(xs, acc.push(x))
+    }
+
+    loop(seq.toList.reverse, Empty)
+  }
 }
